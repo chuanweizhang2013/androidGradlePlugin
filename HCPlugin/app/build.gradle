@@ -44,24 +44,50 @@ buildscript {
         classpath 'com.hc.plugin:myplugin:1.0.0'
     }
 }
-project.afterEvaluate { project ->
-    project.tasks.transformDexArchiveWithDexMergerForDebug << {
-        println 'this gradle script add my own step from plugin'
-        //Get the inputs of this tas
-        project.tasks.transformDexArchiveWithDexMergerForDebug.getInputs().getFiles().collect().each { element1 ->
-            println "inputs " + element1
-        }
-        //Get the outputs of this task
-        project.tasks.transformDexArchiveWithDexMergerForDebug.getOutputs().getFiles().collect().each() { element ->
-            def file = new File(element.toString())
-            def files = file.listFiles()
-            def files2 = files[0].listFiles()
-            String dexfilepath = files2[0]
-            println "Outputs Dex file's path: "+dexfilepath
-            //Modify the dex 可先注释掉
-//                    testRewrite(dexfilepath)
+project.
+//第一种匹配出所有的task
+/*project.afterEvaluate {
+    tasks.matching {
+//        it.name.startsWith('compile') && it.name.endsWith('JavaWithJavac')
+        it.name.startsWith('transformDexArchiveWithDexMergerFor')
+    }.each { task ->
+        task.doLast {
+            println("111111111111111")
         }
     }
 }
+*/
+
+/*
+//第2种在某个task
+project.afterEvaluate {
+    transformDexArchiveWithDexMergerForRelease.doFirst {
+        println("111111111111111")
+    }
+    transformDexArchiveWithDexMergerForRelease.doLast {
+        println("2222222222222222")
+    }
+}
+*/
+
+//project.afterEvaluate { project ->
+//    project.tasks.transformDexArchiveWithDexMergerForDebug << {
+//        println 'this gradle script add my own step from plugin'
+//        //Get the inputs of this tas
+//        project.tasks.transformDexArchiveWithDexMergerForDebug.getInputs().getFiles().collect().each { element1 ->
+//            println "inputs " + element1
+//        }
+//        //Get the outputs of this task
+//        project.tasks.transformDexArchiveWithDexMergerForDebug.getOutputs().getFiles().collect().each() { element ->
+//            def file = new File(element.toString())
+//            def files = file.listFiles()
+//            def files2 = files[0].listFiles()
+//            String dexfilepath = files2[0]
+//            println "Outputs Dex file's path: "+dexfilepath
+//            //Modify the dex 可先注释掉
+////                    testRewrite(dexfilepath)
+//        }
+//    }
+//}
 apply plugin: 'com.hc.gradle'
 
