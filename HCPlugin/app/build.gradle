@@ -1,0 +1,67 @@
+apply plugin: 'com.android.application'
+apply plugin: com.hc.second.SecondPlugin
+
+android {
+    compileSdkVersion 28
+//    buildToolsVersion "28.0.0"
+
+    defaultConfig {
+        applicationId "com.hc.hcplugin"
+        minSdkVersion 15
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    testImplementation 'junit:junit:4.12'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+}
+android {
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
+}
+buildscript {
+    repositories {
+        maven {
+            def rootdir =project.getRootDir()
+            url uri("${rootdir}/repo")
+        }
+    }
+    dependencies {
+        classpath 'com.hc.plugin:myplugin:1.0.0'
+    }
+}
+project.afterEvaluate { project ->
+    project.tasks.transformDexArchiveWithDexMergerForDebug << {
+        println 'this gradle script add my own step from plugin'
+        //Get the inputs of this tas
+        project.tasks.transformDexArchiveWithDexMergerForDebug.getInputs().getFiles().collect().each { element1 ->
+            println "inputs " + element1
+        }
+        //Get the outputs of this task
+        project.tasks.transformDexArchiveWithDexMergerForDebug.getOutputs().getFiles().collect().each() { element ->
+            def file = new File(element.toString())
+            def files = file.listFiles()
+            def files2 = files[0].listFiles()
+            String dexfilepath = files2[0]
+            println "Outputs Dex file's path: "+dexfilepath
+            //Modify the dex 可先注释掉
+//                    testRewrite(dexfilepath)
+        }
+    }
+}
+apply plugin: 'com.hc.gradle'
+

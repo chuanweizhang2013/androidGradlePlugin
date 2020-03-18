@@ -1,0 +1,28 @@
+apply plugin: 'groovy'
+apply plugin: 'maven'
+
+dependencies {
+    implementation gradleApi()//gradle sdk
+    implementation localGroovy()//groovy sdk
+}
+
+repositories {
+    mavenCentral()
+}
+
+
+group='com.hc.plugin'
+version='1.0.0'
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            //提交到远程服务器：
+           // repository(url: "http://www.xxx.com/repos") {
+            //    authentication(userName: "admin", password: "admin")
+           // }
+            def rootdir =project.getRootDir()
+            repository(url: uri("${rootdir}/repo"))
+        }
+    }
+}
